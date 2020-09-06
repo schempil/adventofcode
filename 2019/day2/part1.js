@@ -1,8 +1,10 @@
 var fs = require('fs')
-var os = require('os')
 
 fs.readFile('input.txt', 'utf8', function(err, data) {
     let sequence = data.split(',').map(object => parseInt(object))
+
+    sequence[1] = 12
+    sequence[2] = 2
 
     let index = 0
 
@@ -10,18 +12,14 @@ fs.readFile('input.txt', 'utf8', function(err, data) {
         index = execute(sequence, index)
     }
 
-    console.log(sequence)
+    console.log('The correct answer is', sequence[0])
 })
 
 const execute = (sequence, index) => {
+    const calculated = calculateOpcode(sequence[index], sequence[sequence[index + 1]], sequence[sequence[index + 2]])
 
-    console.log('### execute index', index)
-
-    const calculated = calculateOpcode(sequence[index], sequence[index + 1], sequence[index + 2])
-
-    console.log('### calculated', calculated)
-
-    if (calculated) {
+    if (!!calculated || calculated === 0) {
+        sequence[sequence[index + 3]] = calculated
         return index + 4
     }
 
@@ -29,7 +27,6 @@ const execute = (sequence, index) => {
 }
 
 const calculateOpcode = (opCode, valueOne, valueTwo) => {
-
     let result = null;
 
     if (opCode === 1) {
