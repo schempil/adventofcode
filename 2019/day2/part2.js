@@ -3,22 +3,25 @@ var fs = require('fs')
 fs.readFile('input.txt', 'utf8', function(err, data) {
     let sequence = data.split(',').map(object => parseInt(object))
 
-    sequence[0] = 0
-    sequence[1] = 0
+    let solution = solve(JSON.parse(JSON.stringify(sequence)))
 
-    const solution = solve(sequence)
+    for (let noun = 0; noun < 100; noun++) {
+        for (let verb = 0; verb < 100; verb++) {
+            sequence[1] = noun
+            sequence[2] = verb
 
-    if (solution !== 19690720) {
+            solution = solve(JSON.parse(JSON.stringify(sequence)))
 
+            if (solution === 19690720) {
+                console.log(`Solved! Noun is ${noun} and verb is ${verb}, so the answer is ${100 * noun + verb}`)
+                return
+            }
+        }
     }
 
-    console.log('The solution is', solution)
 })
 
 const solve = (sequence) => {
-    sequence[1] = 12
-    sequence[2] = 2
-
     let index = 0
 
     while(index >= 0) {
