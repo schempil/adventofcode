@@ -34,7 +34,16 @@ func Solve() {
 			value2, _ := strconv.Atoi(element2)
 
 			if value1+value2 == 2020 {
-				fmt.Println("Solution:", value1*value2)
+				fmt.Println("Solution Part1:", value1*value2)
+			}
+
+			for _, element3 := range array {
+
+				value3, _ := strconv.Atoi(element3)
+
+				if value1+value2+value3 == 2020 {
+					fmt.Println("Solution Part2:", value1*value2*value3)
+				}
 			}
 		}
 
