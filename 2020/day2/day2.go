@@ -2,8 +2,54 @@ package day2
 
 import (
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
+	"strconv"
+	"strings"
 )
 
 func Solve() {
-	fmt.Println("Solution Day 2 - Part 1")
+	absolutePath, _ := filepath.Abs("./day2/input.txt")
+	content, _ := ioutil.ReadFile(absolutePath)
+	text := string(content)
+	inputs := strings.Split(text, "\n")
+
+	validPasswordCount := 0
+
+	for _, input := range inputs {
+		policy, password := getPolicyAndPasswordFromEntry(input)
+
+		if checkPasswordComplianceAgainstPolicy(password, policy) {
+			validPasswordCount++
+		}
+	}
+
+	fmt.Println("Valid passwords:", validPasswordCount)
+}
+
+type policy struct {
+	from   int
+	to     int
+	letter string
+}
+
+func getPolicyAndPasswordFromEntry(entry string) (policy, string) {
+	s := strings.Split(entry, ":")
+	policyString := s[0]
+	password := strings.Join(strings.Fields(s[1]), "")
+
+	policyParts := strings.Split(policyString, " ")
+	fromTo := strings.Split(policyParts[0], "-")
+	from, _ := strconv.Atoi(fromTo[0])
+	to, _ := strconv.Atoi(fromTo[1])
+	policy := policy{from, to, policyParts[1]}
+
+	return policy, password
+
+}
+
+func checkPasswordComplianceAgainstPolicy(password string, policy policy) bool {
+	amountOfLetterInPassword := len(strings.Split(password, policy.letter)) - 1
+
+	return amountOfLetterInPassword >= policy.from && amountOfLetterInPassword <= policy.to
 }
