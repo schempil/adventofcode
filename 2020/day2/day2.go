@@ -29,7 +29,8 @@ func Solve() {
 		}
 	}
 
-	fmt.Println("Valid passwords:", validSledRentalPasswordCount, validTobogganCorporatePasswordCount)
+	fmt.Println("Solution Day 2 - Part 1:", validSledRentalPasswordCount)
+	fmt.Println("Solution Day 2 - Part 2:", validTobogganCorporatePasswordCount)
 }
 
 type policy struct {
