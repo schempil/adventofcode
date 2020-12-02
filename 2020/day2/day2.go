@@ -14,17 +14,22 @@ func Solve() {
 	text := string(content)
 	inputs := strings.Split(text, "\n")
 
-	validPasswordCount := 0
+	validSledRentalPasswordCount := 0
+	validTobogganCorporatePasswordCount := 0
 
 	for _, input := range inputs {
 		policy, password := getPolicyAndPasswordFromEntry(input)
 
-		if checkPasswordComplianceAgainstPolicy(password, policy) {
-			validPasswordCount++
+		if checkPasswordComplianceAgainstPolicyAccordingToSledRental(password, policy) {
+			validSledRentalPasswordCount++
+		}
+
+		if checkPasswordComplianceAgainstPolicyAccordingToTobogganCorporate(password, policy) {
+			validTobogganCorporatePasswordCount++
 		}
 	}
 
-	fmt.Println("Valid passwords:", validPasswordCount)
+	fmt.Println("Valid passwords:", validSledRentalPasswordCount, validTobogganCorporatePasswordCount)
 }
 
 type policy struct {
@@ -45,11 +50,20 @@ func getPolicyAndPasswordFromEntry(entry string) (policy, string) {
 	policy := policy{from, to, policyParts[1]}
 
 	return policy, password
-
 }
 
-func checkPasswordComplianceAgainstPolicy(password string, policy policy) bool {
+func checkPasswordComplianceAgainstPolicyAccordingToSledRental(password string, policy policy) bool {
 	amountOfLetterInPassword := len(strings.Split(password, policy.letter)) - 1
 
 	return amountOfLetterInPassword >= policy.from && amountOfLetterInPassword <= policy.to
+}
+
+func checkPasswordComplianceAgainstPolicyAccordingToTobogganCorporate(password string, policy policy) bool {
+
+	passwordLetters := strings.Split(password, "")
+
+	hasFirstPositionTheLetter := passwordLetters[policy.from-1] == policy.letter
+	hasSecondPositionTheLetter := passwordLetters[policy.to-1] == policy.letter
+
+	return hasFirstPositionTheLetter != hasSecondPositionTheLetter
 }
