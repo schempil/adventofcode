@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -25,17 +26,23 @@ func Solve() {
 	text := string(content)
 	inputs := strings.Split(text, "\n\n")
 
-	validPassportCount := 0
+	simpleValidatedPassportCount := 0
+	strictValidatedPassportCount := 0
 
 	for _, input := range inputs {
 		passport := getPassportOfInput(input)
-		if isPassportValid(passport) {
-			validPassportCount++
+		if isPassportSimpleValidated(passport) {
+			simpleValidatedPassportCount++
+
+			if isPassportStrictValidated(passport) {
+				strictValidatedPassportCount++
+			}
+
 		}
 	}
 
-	fmt.Println("Solution Day 4 - Part 1:", validPassportCount)
-	fmt.Println("Solution Day 4 - Part 2:")
+	fmt.Println("Solution Day 4 - Part 1:", simpleValidatedPassportCount)
+	fmt.Println("Solution Day 4 - Part 2:", strictValidatedPassportCount)
 }
 
 func getPassportOfInput(input string) passport {
@@ -83,7 +90,7 @@ func evaluateDataIntoPassport(data string, passport passport) passport {
 	return passport
 }
 
-func isPassportValid(passport passport) bool {
+func isPassportSimpleValidated(passport passport) bool {
 
 	if passport.birthYear == 0 {
 		return false
@@ -108,4 +115,80 @@ func isPassportValid(passport passport) bool {
 	}
 
 	return true
+}
+
+func isPassportStrictValidated(passport passport) bool {
+
+	if len(strconv.Itoa(passport.birthYear)) != 4 || passport.birthYear < 1920 || passport.birthYear > 2002 {
+		return false
+	}
+	if len(strconv.Itoa(passport.issueYear)) != 4 || passport.issueYear < 2010 || passport.issueYear > 2020 {
+		return false
+	}
+	if len(strconv.Itoa(passport.expirationYear)) != 4 || passport.expirationYear < 2020 || passport.expirationYear > 2030 {
+		return false
+	}
+	if !isHeightValid(passport.height) {
+		return false
+	}
+	if !isHairColorValid(passport.hairColor) {
+		return false
+	}
+	if !isEyeColorValid(passport.eyeColor) {
+		return false
+	}
+	if !isPassportIdValid(passport.passportId) {
+		return false
+	}
+
+	return true
+}
+
+func isHeightValid(height string) bool {
+	matchedCm, _ := regexp.MatchString(`[0-9][0-9][0-9][c][m]`, height)
+	matchedIn, _ := regexp.MatchString(`[0-9][0-9][i][n]`, height)
+
+	if matchedCm == matchedIn {
+		return false
+	}
+
+	if matchedCm {
+		heightValue, _ := strconv.Atoi(height[0:3])
+
+		if heightValue < 150 || heightValue > 193 {
+			return false
+		}
+
+	}
+
+	if matchedIn {
+		heightValue, _ := strconv.Atoi(height[0:2])
+
+		if heightValue < 59 || heightValue > 76 {
+			return false
+		}
+	}
+
+	return true
+}
+
+func isHairColorValid(color string) bool {
+	matched, _ := regexp.MatchString(`#[a-fA-F0-9]{6}`, color)
+
+	return matched
+}
+
+func isEyeColorValid(color string) bool {
+
+	if color == "amb" || color == "blu" || color == "brn" || color == "gry" || color == "grn" || color == "hzl" || color == "oth" {
+		return true
+	}
+
+	return false
+}
+
+func isPassportIdValid(id string) bool {
+	matched, _ := regexp.MatchString(`^(\d){9}$`, id)
+
+	return matched
 }
