@@ -14,13 +14,35 @@ func Solve() {
 	text := string(content)
 	inputs := strings.Split(text, "\n")
 
-	fmt.Println("Solution Day 5 - Part 1:", getHighestSeatId(inputs))
-	fmt.Println("Solution Day 5 - Part 2:")
+	highestSeatId := getHighestSeatId(inputs)
+
+	fmt.Println("Solution Day 5 - Part 1:", highestSeatId)
+	fmt.Println("Solution Day 5 - Part 2:", getMySeatId(inputs, highestSeatId))
 }
 
 type seat struct {
 	row    int
 	column int
+}
+
+func getMySeatId(inputs []string, highestSeatId int) int {
+
+	seatIdExistingMap := make(map[int]bool)
+
+	for _, input := range inputs {
+		seat := getSeat(input)
+		seatId := getSeatId(seat)
+
+		seatIdExistingMap[seatId] = true
+	}
+
+	for seatId := 0; seatId < highestSeatId; seatId++ {
+		if seatIdExistingMap[seatId-1] && !seatIdExistingMap[seatId] && seatIdExistingMap[seatId+1] {
+			return seatId
+		}
+	}
+
+	return -1
 }
 
 func getHighestSeatId(inputs []string) int {
@@ -36,7 +58,6 @@ func getHighestSeatId(inputs []string) int {
 	}
 
 	return maxSeatId
-
 }
 
 func getSeatId(seat seat) int {
