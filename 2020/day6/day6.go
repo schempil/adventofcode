@@ -14,7 +14,18 @@ func Solve() {
 	inputs := strings.Split(text, "\n\n")
 
 	fmt.Println("Solution Day 6 - Part 1:", getAnyoneAnsweredYesSum(inputs))
-	fmt.Println("Solution Day 6 - Part 2:")
+	fmt.Println("Solution Day 6 - Part 2:", getEveryoneAnsweredYesSum(inputs))
+}
+
+func getEveryoneAnsweredYesSum(inputs []string) int {
+
+	sum := 0
+
+	for _, input := range inputs {
+		sum += getEveryoneAnsweredYesPerGroup(input)
+	}
+
+	return sum
 }
 
 func getAnyoneAnsweredYesSum(inputs []string) int {
@@ -42,4 +53,29 @@ func getAnyoneAnsweredYesPerGroup(input string) int {
 	}
 
 	return len(answeredQuestionsMap)
+}
+
+func getEveryoneAnsweredYesPerGroup(input string) int {
+
+	persons := strings.Split(input, "\n")
+	answeredQuestionsMap := make(map[string]int)
+
+	for _, person := range persons {
+		answers := strings.Split(person, "")
+
+		for _, answer := range answers {
+			answeredQuestionsMap[answer]++
+		}
+	}
+
+	everyoneAnsweredCount := 0
+
+	for _, answeredQuestion := range answeredQuestionsMap {
+
+		if answeredQuestion == len(persons) {
+			everyoneAnsweredCount++
+		}
+	}
+
+	return everyoneAnsweredCount
 }
