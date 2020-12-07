@@ -13,27 +13,16 @@ func Solve() {
 	text := string(content)
 	inputs := strings.Split(text, "\n\n")
 
-	fmt.Println("Solution Day 6 - Part 1:", getAnyoneAnsweredYesSum(inputs))
-	fmt.Println("Solution Day 6 - Part 2:", getEveryoneAnsweredYesSum(inputs))
+	fmt.Println("Solution Day 6 - Part 1:", getEveryoneAnsweredYesSum(inputs, getAnyoneAnsweredYesPerGroup))
+	fmt.Println("Solution Day 6 - Part 2:", getEveryoneAnsweredYesSum(inputs, getEveryoneAnsweredYesPerGroup))
 }
 
-func getEveryoneAnsweredYesSum(inputs []string) int {
+func getEveryoneAnsweredYesSum(inputs []string, getAnswersPerGroup func(input string) int) int {
 
 	sum := 0
 
 	for _, input := range inputs {
-		sum += getEveryoneAnsweredYesPerGroup(input)
-	}
-
-	return sum
-}
-
-func getAnyoneAnsweredYesSum(inputs []string) int {
-
-	sum := 0
-
-	for _, input := range inputs {
-		sum += getAnyoneAnsweredYesPerGroup(input)
+		sum += getAnswersPerGroup(input)
 	}
 
 	return sum
