@@ -18,9 +18,11 @@ func Solve() {
 	commands := parseCommands(inputs)
 
 	executeCommands(commands, &acc)
-
 	fmt.Println("Solution Day 8 - Part 1:", acc)
-	fmt.Println("Solution Day 8 - Part 2:", inputs[0])
+
+	resetAccumulatorAndCommands(&acc, &commands, inputs)
+	executeCommandsAndFixEarlyTermination(&commands, &acc, inputs)
+	fmt.Println("Solution Day 8 - Part 2:", acc)
 }
 
 type command struct {
@@ -30,7 +32,52 @@ type command struct {
 	value    int
 }
 
-func executeCommands(commands []command, acc *int) {
+func resetAccumulatorAndCommands(acc *int, commands *[]command, inputs []string) {
+	*acc = 0
+	*commands = parseCommands(inputs)
+}
+
+func executeCommandsAndFixEarlyTermination(commands *[]command, acc *int, inputs []string) int {
+
+	for index, command := range *commands {
+
+		resetAccumulatorAndCommands(acc, commands, inputs)
+		commandList := *commands
+
+		if command.name == "acc" {
+			continue
+		}
+
+		if command.name == "jmp" || command.name == "nop" {
+			commandList[index] = switchCommand(command)
+		}
+
+		earlyTermination := executeCommands(commandList, acc)
+
+		if earlyTermination == false {
+			return *acc
+		}
+
+	}
+
+	return -10021995
+}
+
+func switchCommand(command command) command {
+	if command.name == "jmp" {
+		command.name = "nop"
+		return command
+	}
+
+	if command.name == "nop" {
+		command.name = "jmp"
+		return command
+	}
+
+	return command
+}
+
+func executeCommands(commands []command, acc *int) (earlyTermination bool) {
 
 	runMap := make(map[int]bool)
 
@@ -38,7 +85,7 @@ func executeCommands(commands []command, acc *int) {
 		actualCommand := commands[index]
 
 		if runMap[actualCommand.id] == true {
-			break
+			return true
 		}
 
 		runMap[actualCommand.id] = true
@@ -57,6 +104,8 @@ func executeCommands(commands []command, acc *int) {
 		}
 
 	}
+
+	return false
 }
 
 func jump(currentIndex *int, operator string, value int) {
