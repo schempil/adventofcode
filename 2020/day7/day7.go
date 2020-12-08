@@ -29,11 +29,7 @@ type Bag struct {
 }
 
 func countUniqueParentBags(bag *Bag) int {
-
-	fmt.Println("### bag", bag)
-
 	parentBags := collectParentBags(bag, make(map[string]*Bag))
-
 	return len(parentBags)
 }
 
