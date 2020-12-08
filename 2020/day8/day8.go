@@ -20,7 +20,6 @@ func Solve() {
 	executeCommands(commands, &acc)
 	fmt.Println("Solution Day 8 - Part 1:", acc)
 
-	resetAccumulatorAndCommands(&acc, &commands, inputs)
 	executeCommandsAndFixEarlyTermination(&commands, &acc, inputs)
 	fmt.Println("Solution Day 8 - Part 2:", acc)
 }
@@ -41,12 +40,12 @@ func executeCommandsAndFixEarlyTermination(commands *[]command, acc *int, inputs
 
 	for index, command := range *commands {
 
-		resetAccumulatorAndCommands(acc, commands, inputs)
-		commandList := *commands
-
 		if command.name == "acc" {
 			continue
 		}
+
+		resetAccumulatorAndCommands(acc, commands, inputs)
+		commandList := *commands
 
 		if command.name == "jmp" || command.name == "nop" {
 			commandList[index] = switchCommand(command)
@@ -57,10 +56,9 @@ func executeCommandsAndFixEarlyTermination(commands *[]command, acc *int, inputs
 		if earlyTermination == false {
 			return *acc
 		}
-
 	}
 
-	return -10021995
+	return *acc
 }
 
 func switchCommand(command command) command {
@@ -69,11 +67,7 @@ func switchCommand(command command) command {
 		return command
 	}
 
-	if command.name == "nop" {
-		command.name = "jmp"
-		return command
-	}
-
+	command.name = "jmp"
 	return command
 }
 
