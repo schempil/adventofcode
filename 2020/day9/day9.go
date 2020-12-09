@@ -15,9 +15,10 @@ func Solve() {
 	inputs := strings.Split(text, "\n")
 
 	sequence := parseInputsToSequence(inputs)
+	invalidNumber, invalidIndex := checkSequenceWithPreambleUntilError(sequence, 25)
 
-	fmt.Println("Solution Day 9 - Part 1:", checkSequenceWithPreambleUntilError(sequence, 25))
-	fmt.Println("Solution Day 9 - Part 2:")
+	fmt.Println("Solution Day 9 - Part 1:", invalidNumber)
+	fmt.Println("Solution Day 9 - Part 2:", sumInvalidTargetFromSequence(sequence, invalidNumber, invalidIndex))
 }
 
 func parseInputsToSequence(inputs []string) []int {
@@ -32,7 +33,31 @@ func parseInputsToSequence(inputs []string) []int {
 	return sequence
 }
 
-func checkSequenceWithPreambleUntilError(sequence []int, preambleCount int) int {
+func sumInvalidTargetFromSequence(sequence []int, invalidTarget int, invalidIndex int) int {
+
+	partialSequence := sequence[0:invalidIndex]
+	valuesThatSumUpTarget := canBeSummedUpOutOfAll(partialSequence, invalidTarget)
+
+	return getSumOfMinAndMax(valuesThatSumUpTarget)
+}
+
+func getSumOfMinAndMax(values []int) int {
+	var min, max int
+
+	for _, value := range values {
+		if value > max {
+			max = value
+		}
+
+		if min == 0 || value < min {
+			min = value
+		}
+	}
+
+	return min + max
+}
+
+func checkSequenceWithPreambleUntilError(sequence []int, preambleCount int) (invalidNumber int, invalidIndex int) {
 
 	for index, _ := range sequence {
 		if index+preambleCount >= len(sequence) {
@@ -42,17 +67,17 @@ func checkSequenceWithPreambleUntilError(sequence []int, preambleCount int) int 
 		preamble := sequence[index : index+preambleCount]
 		target := sequence[index+preambleCount]
 
-		canBe := canBeSummedUp(preamble, target)
+		canBe := canBeSummedUpOutOfTwo(preamble, target)
 
 		if canBe == false {
-			return target
+			return target, index + preambleCount
 		}
 	}
 
-	return -1
+	return -1, -1
 }
 
-func canBeSummedUp(sequence []int, target int) bool {
+func canBeSummedUpOutOfTwo(sequence []int, target int) bool {
 
 	canBeSummedUp := false
 
@@ -65,4 +90,28 @@ func canBeSummedUp(sequence []int, target int) bool {
 	}
 
 	return canBeSummedUp
+}
+
+func canBeSummedUpOutOfAll(sequence []int, target int) []int {
+
+	var sum int
+	var addedValues []int
+
+	for startIndex, _ := range sequence {
+		addedValues = []int{}
+		sum = 0
+
+		partialSequence := sequence[startIndex:]
+
+		for index := 0; sum < target; index++ {
+			addedValues = append(addedValues, partialSequence[index])
+			sum += partialSequence[index]
+
+			if sum == target {
+				return addedValues
+			}
+		}
+	}
+
+	return []int{}
 }
