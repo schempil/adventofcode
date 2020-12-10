@@ -15,7 +15,13 @@ func Solve() {
 	text := string(content)
 	inputs := strings.Split(text, "\n")
 
-	fmt.Println("Solution Day 10 - Part 1:", getProductOfOneAndThreeDifferences(parseAndSort(inputs)))
+	adapters := parseAndSort(inputs)
+
+	fmt.Println("Solution Day 10 - Part 1:", getProductOfOneAndThreeDifferences(adapters))
+
+	targetJolt := getTargetJolt(adapters)
+	fmt.Println("### targetJolt", targetJolt)
+
 	fmt.Println("Solution Day 10 - Part 2:")
 }
 
@@ -31,6 +37,10 @@ func parseAndSort(inputs []string) []int {
 	sort.Ints(sequence)
 
 	return sequence
+}
+
+func getTargetJolt(inputs []int) int {
+	return inputs[len(inputs)-1] + 3
 }
 
 func getProductOfOneAndThreeDifferences(inputs []int) int {
