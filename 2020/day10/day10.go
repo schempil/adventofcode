@@ -39,9 +39,6 @@ func parseAndSort(inputs []string) []int {
 }
 
 func getTargetJolt(inputs []int) int {
-
-	fmt.Println("### Get target jolt", inputs)
-
 	return inputs[len(inputs)-1] + 3
 }
 
