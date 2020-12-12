@@ -27,17 +27,17 @@ func Solve() {
 		seatLayout = append(seatLayout, row)
 	}
 
-	seatLayout, isEqual := makePeopleMoveOneStep(seatLayout)
-
-	for !isEqual {
-		seatLayout, isEqual = makePeopleMoveOneStep(seatLayout)
-	}
-
-	fmt.Println("Solution Day 11 - Part 1:", countOccupiedSeats(seatLayout))
-	fmt.Println("Solution Day 11 - Part 2:")
+	fmt.Println("Solution Day 11 - Part 1:", solveAdjacent(seatLayout, countOccupiedSeatsAdjacent, 4))
+	fmt.Println("Solution Day 11 - Part 2:", solveAdjacent(seatLayout, countOccupiedSeatsInSight, 5))
 }
 
-func countOccupiedSeats(seatLayout [][]string) int {
+func solveAdjacent(seatLayout [][]string, countOccupied func([][]string, int, int) int, maxOccupied int) int {
+
+	isEqual := false
+
+	for !isEqual {
+		seatLayout, isEqual = makePeopleMoveOneStep(seatLayout, countOccupied, maxOccupied)
+	}
 
 	occupied := 0
 
@@ -52,7 +52,7 @@ func countOccupiedSeats(seatLayout [][]string) int {
 	return occupied
 }
 
-func makePeopleMoveOneStep(seatLayout [][]string) (newLayout [][]string, isEqual bool) {
+func makePeopleMoveOneStep(seatLayout [][]string, countOccupied func([][]string, int, int) int, maxOccupied int) (newLayout [][]string, isEqual bool) {
 
 	prediction := make([][]string, 0)
 
@@ -65,13 +65,13 @@ func makePeopleMoveOneStep(seatLayout [][]string) (newLayout [][]string, isEqual
 			seat := seatLayout[rowIndex][seatIndex]
 			seatPrediction := seat
 
-			occupiedSeats := countAdjacentOccupiedSeats(seatLayout, rowIndex, seatIndex)
+			occupiedSeats := countOccupied(seatLayout, rowIndex, seatIndex)
 
 			if seat == "L" && occupiedSeats == 0 {
 				seatPrediction = toggleSeat(seatPrediction)
 			}
 
-			if seat == "#" && occupiedSeats >= 4 {
+			if seat == "#" && occupiedSeats >= maxOccupied {
 				seatPrediction = toggleSeat(seatPrediction)
 			}
 
@@ -98,7 +98,47 @@ func toggleSeat(seat string) string {
 	return "."
 }
 
-func countAdjacentOccupiedSeats(seatLayout [][]string, row int, seat int) int {
+func countOccupiedSeatsInSight(seatLayout [][]string, row int, seat int) int {
+
+	inSightDirections := [][]int{
+		{-1, -1},
+		{-1, 0},
+		{-1, 1},
+		{0, -1},
+		{0, 1},
+		{1, -1},
+		{1, 0},
+		{1, 1},
+	}
+
+	occupiedCount := 0
+
+	for _, inSightDirection := range inSightDirections {
+
+		count := 1
+
+		y := inSightDirection[0]
+		x := inSightDirection[1]
+
+		for {
+			seatValue, isValid := getSeat(seatLayout, row+y*count, seat+x*count)
+			count++
+
+			if seatValue == "#" {
+				occupiedCount++
+				break
+			}
+
+			if seatValue == "L" || !isValid {
+				break
+			}
+		}
+	}
+
+	return occupiedCount
+}
+
+func countOccupiedSeatsAdjacent(seatLayout [][]string, row int, seat int) int {
 
 	adjacentSeats := [][]int{
 		{-1, -1},
@@ -114,7 +154,7 @@ func countAdjacentOccupiedSeats(seatLayout [][]string, row int, seat int) int {
 	occupiedCount := 0
 
 	for _, adjacentSeat := range adjacentSeats {
-		seatValue, isValid := getAdjacentSeat(seatLayout, row+adjacentSeat[0], seat+adjacentSeat[1])
+		seatValue, isValid := getSeat(seatLayout, row+adjacentSeat[0], seat+adjacentSeat[1])
 
 		if !isValid {
 			continue
@@ -129,7 +169,7 @@ func countAdjacentOccupiedSeats(seatLayout [][]string, row int, seat int) int {
 	return occupiedCount
 }
 
-func getAdjacentSeat(seatLayout [][]string, row int, seat int) (seatValue string, isValid bool) {
+func getSeat(seatLayout [][]string, row int, seat int) (seatValue string, isValid bool) {
 
 	if row < 0 || row >= len(seatLayout) {
 		return "", false
