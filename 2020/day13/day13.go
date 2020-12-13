@@ -18,7 +18,7 @@ func Solve() {
 	availableLines := strings.Split(inputs[1], ",")
 
 	fmt.Println("Solution Day 13 - Part 1:", getLineWithLeastWaitingTime(earliest, availableLines))
-	fmt.Println("Solution Day 13 - Part 2:")
+	fmt.Println("Solution Day 13 - Part 2:", getEarliestTimestampOfSequenceDepartures(availableLines))
 }
 
 func getLineWithLeastWaitingTime(earliest int, lines []string) int {
@@ -44,4 +44,28 @@ func getLineWithLeastWaitingTime(earliest int, lines []string) int {
 	}
 
 	return waitingTime * lineWithLeastWaitingTime
+}
+
+func getEarliestTimestampOfSequenceDepartures(lines []string) int {
+
+	timestamp := 0
+	diffToNextTimestamp := 1
+
+	for index, line := range lines {
+
+		if line == "x" {
+			continue
+		}
+
+		currentLine, _ := strconv.Atoi(line)
+
+		for (timestamp+index)%currentLine > 0 {
+			timestamp += diffToNextTimestamp
+			fmt.Println("### timestamp", timestamp)
+		}
+
+		diffToNextTimestamp *= currentLine
+	}
+
+	return timestamp
 }
