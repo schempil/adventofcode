@@ -61,7 +61,6 @@ func getEarliestTimestampOfSequenceDepartures(lines []string) int {
 
 		for (timestamp+index)%currentLine > 0 {
 			timestamp += diffToNextTimestamp
-			fmt.Println("### timestamp", timestamp)
 		}
 
 		diffToNextTimestamp *= currentLine
