@@ -40,29 +40,27 @@ func getNthSpokenNumber(inputs []string, nth int) int {
 		if len(lastSpokenMap[lastSpokenNumber]) == 1 {
 			lastSpokenNumber = 0
 
-			if len(lastSpokenMap[lastSpokenNumber]) < 2 {
-				lastSpokenMap[lastSpokenNumber] = append(lastSpokenMap[lastSpokenNumber], roundCount)
-			} else {
-				lastSpokenMap[lastSpokenNumber][0] = lastSpokenMap[lastSpokenNumber][1]
-				lastSpokenMap[lastSpokenNumber][1] = roundCount
-			}
-
+			updateLastSpokenMap(lastSpokenMap, lastSpokenNumber, roundCount)
 			roundCount++
 			continue
 		}
 
 		lastSpokenNumber = lastSpokenMap[lastSpokenNumber][1] - lastSpokenMap[lastSpokenNumber][0]
 
-		if len(lastSpokenMap[lastSpokenNumber]) < 2 {
-			lastSpokenMap[lastSpokenNumber] = append(lastSpokenMap[lastSpokenNumber], roundCount)
-		} else {
-			lastSpokenMap[lastSpokenNumber][0] = lastSpokenMap[lastSpokenNumber][1]
-			lastSpokenMap[lastSpokenNumber][1] = roundCount
-		}
+		updateLastSpokenMap(lastSpokenMap, lastSpokenNumber, roundCount)
 		roundCount++
 		continue
-
 	}
 
 	return lastSpokenNumber
+}
+
+func updateLastSpokenMap(lastSpokenMap map[int][]int, lastSpokenNumber int, roundCount int) {
+
+	if len(lastSpokenMap[lastSpokenNumber]) < 2 {
+		lastSpokenMap[lastSpokenNumber] = append(lastSpokenMap[lastSpokenNumber], roundCount)
+	} else {
+		lastSpokenMap[lastSpokenNumber][0] = lastSpokenMap[lastSpokenNumber][1]
+		lastSpokenMap[lastSpokenNumber][1] = roundCount
+	}
 }
