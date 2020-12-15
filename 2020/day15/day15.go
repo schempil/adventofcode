@@ -59,9 +59,9 @@ func updateLastSpokenMap(lastSpokenMap map[int][]int, lastSpokenNumber int, roun
 
 	if len(lastSpokenMap[lastSpokenNumber]) < 2 {
 		lastSpokenMap[lastSpokenNumber] = append(lastSpokenMap[lastSpokenNumber], roundCount)
-	} else {
-		lastSpokenMap[lastSpokenNumber][0] = lastSpokenMap[lastSpokenNumber][1]
-		lastSpokenMap[lastSpokenNumber][1] = roundCount
+		return
 	}
 
+	lastSpokenMap[lastSpokenNumber][0] = lastSpokenMap[lastSpokenNumber][1]
+	lastSpokenMap[lastSpokenNumber][1] = roundCount
 }
