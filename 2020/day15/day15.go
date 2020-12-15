@@ -63,4 +63,5 @@ func updateLastSpokenMap(lastSpokenMap map[int][]int, lastSpokenNumber int, roun
 		lastSpokenMap[lastSpokenNumber][0] = lastSpokenMap[lastSpokenNumber][1]
 		lastSpokenMap[lastSpokenNumber][1] = roundCount
 	}
+
 }
