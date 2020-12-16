@@ -14,8 +14,10 @@ func Solve() {
 	content, _ := ioutil.ReadFile(absolutePath)
 	text := string(content)
 
-	fmt.Println("Solution Day 16 - Part 1:", getErrorRateOfNearbyTickets(text))
-	fmt.Println("Solution Day 16 - Part 2:")
+	rules, myTicket, nearbyTickets := getRulesMyTicketAndNearbyTicketsFromInput(text)
+
+	fmt.Println("Solution Day 16 - Part 1:", getErrorRateOfNearbyTickets(rules, nearbyTickets))
+	fmt.Println("Solution Day 16 - Part 2:", getDepartureDataFromMyTicket(rules, myTicket, nearbyTickets))
 }
 
 type scope struct {
@@ -32,11 +34,19 @@ type ticket struct {
 	values []int
 }
 
-func getErrorRateOfNearbyTickets(text string) int {
+func getErrorRateOfNearbyTickets(rules []rule, nearbyTickets []ticket) int {
 
-	rules, _, nearbyTickets := getRulesMyTicketAndNearbyTicketsFromInput(text)
-	invalidValues := checkValidityOfNearbyTickets(rules, nearbyTickets)
+	invalidValues := getInvalidValuesOfNearbyTickets(rules, nearbyTickets)
 	return getErrorRateOfInvalidValues(invalidValues)
+}
+
+func getDepartureDataFromMyTicket(rules []rule, myTicket ticket, nearbyTickets []ticket) int {
+
+	validNearbyTickets := getValidNearbyTickets(rules, nearbyTickets)
+
+	fmt.Println("### validNearbyTickets", validNearbyTickets)
+
+	return -42
 }
 
 func getErrorRateOfInvalidValues(invalidValues []int) int {
@@ -50,7 +60,33 @@ func getErrorRateOfInvalidValues(invalidValues []int) int {
 	return errorRate
 }
 
-func checkValidityOfNearbyTickets(rules []rule, nearbyTickets []ticket) []int {
+func getValidNearbyTickets(rules []rule, nearbyTickets []ticket) []ticket {
+	var validTickets []ticket
+
+	for _, nearbyTicket := range nearbyTickets {
+		if isTicketValid(rules, nearbyTicket) {
+			validTickets = append(validTickets, nearbyTicket)
+		}
+	}
+
+	return validTickets
+}
+
+func isTicketValid(rules []rule, ticket ticket) bool {
+
+	for _, value := range ticket.values {
+		isValueValid := isValueValidToAnyRule(rules, value)
+
+		if !isValueValid {
+			return false
+		}
+
+	}
+
+	return true
+}
+
+func getInvalidValuesOfNearbyTickets(rules []rule, nearbyTickets []ticket) []int {
 
 	var invalidValues []int
 
