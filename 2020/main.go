@@ -1,14 +1,11 @@
 package main
 
 import (
-	"day15"
-	"fmt"
+	"day16"
 )
 
 func main() {
 
-	fmt.Println("Hello AventOfCode 2020")
-
-	day15.Solve()
+	day16.Solve()
 
 }
