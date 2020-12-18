@@ -16,43 +16,8 @@ func Solve() {
 	text := string(content)
 	inputs := strings.Split(text, "\n")
 
-	fmt.Println("Solution Day 18 - Part 1:", getSumOfSolvedExpressions(inputs))
-	fmt.Println("Solution Day 18 - Part 2:")
-}
-
-type resultType int
-type symbolType string
-type expressionType string
-
-func getSumOfSolvedExpressions(inputs []string) int {
-
-	sum := 0
-
-	for _, input := range inputs {
-		sum += int(solveExpression(input))
-	}
-
-	return sum
-}
-
-func solveExpression(input string) resultType {
-
-	expression := strings.Replace(input, " ", "", -1)
-
-	r := regexp.MustCompile(`[(]\d+((\*|\+)\d+)*[)]`)
-
-	matches := r.FindAllString(expression, -1)
-
-	if len(matches) > 0 {
-		match := matches[0]
-
-		matchResult := solveExpressionWithoutParentheses(match[1 : len(match)-1])
-		updatedExpression := strings.Replace(expression, match, strconv.Itoa(int(matchResult)), -1)
-
-		return solveExpression(updatedExpression)
-	}
-
-	return solveExpressionWithoutParentheses(expression)
+	fmt.Println("Solution Day 18 - Part 1:", getSumOfSolvedExpressions(inputs, solveExpressionLeftToRight))
+	fmt.Println("Solution Day 18 - Part 2:", getSumOfSolvedExpressions(inputs, solveExpressionWithPlusPrecedence))
 }
 
 type operation struct {
@@ -60,62 +25,85 @@ type operation struct {
 	value    string
 }
 
-func solveExpressionWithoutParentheses(input string) resultType {
+type solveFunction func(input string) int
 
-	expression := expressionType(strings.Replace(input, " ", "", -1))
+func getSumOfSolvedExpressions(inputs []string, solve solveFunction) int {
+
+	sum := 0
+
+	for _, input := range inputs {
+		sum += int(solveExpression(input, solve))
+	}
+
+	return sum
+}
+
+func getMatchesInExpression(input string, regex string) (matches []string, expression string) {
+	expression = strings.Replace(input, " ", "", -1)
+	r := regexp.MustCompile(regex)
+	return r.FindAllString(expression, -1), expression
+}
+
+func solveExpression(input string, solve solveFunction) int {
+
+	matches, expression := getMatchesInExpression(input, `[(]\d+((\*|\+)\d+)*[)]`)
+
+	if len(matches) > 0 {
+		match := matches[0]
+		matchResult := solve(match[1 : len(match)-1])
+		updatedExpression := strings.Replace(expression, match, strconv.Itoa(matchResult), -1)
+
+		return solveExpression(updatedExpression, solve)
+	}
+
+	return solve(expression)
+}
+
+func solveExpressionWithPlusPrecedence(input string) int {
+
+	matches, expression := getMatchesInExpression(input, `\d+\+\d+`)
+
+	if len(matches) > 0 {
+		match := matches[0]
+		matchResult := solveExpressionLeftToRight(match)
+		updatedExpression := strings.Replace(expression, match, strconv.Itoa(matchResult), -1)
+
+		return solveExpression(updatedExpression, solveExpressionWithPlusPrecedence)
+	}
+
+	return solveExpressionLeftToRight(expression)
+}
+
+func solveExpressionLeftToRight(input string) int {
+
+	expression := strings.Replace(input, " ", "", -1)
 
 	r := regexp.MustCompile(`(\*|\+)\d+`)
 	splits := r.Split(string(expression), -1)
 
 	result, _ := strconv.Atoi(splits[0])
 
-	matches := r.FindAllString(string(expression), -1)
+	matches := r.FindAllString(expression, -1)
 
 	for _, match := range matches {
 		operation := operation{
 			operator: match[0:1],
-			value:    match[1:len(match)],
+			value:    match[1:],
 		}
 
-		result = resultType(result).calculate(operation)
-
+		result = calculate(result, operation)
 	}
 
-	return resultType(result)
+	return result
 }
 
-func (result resultType) calculate(op operation) int {
+func calculate(result int, op operation) int {
 
-	parsedChar, _ := strconv.Atoi(op.value)
-	operator := symbolType(op.operator)
+	parsedValue, _ := strconv.Atoi(op.value)
 
-	if operator.isAddition() {
-		return int(result + resultType(parsedChar))
+	if op.operator == "+" {
+		return result + parsedValue
 	}
 
-	return int(result * resultType(parsedChar))
-}
-
-func (char symbolType) isOperator() bool {
-	if char == "+" || char == "*" {
-		return true
-	}
-
-	return false
-}
-
-func (char symbolType) isAddition() bool {
-	if char == "+" {
-		return true
-	}
-
-	return false
-}
-
-func (char symbolType) isMultiplication() bool {
-	if char == "*" {
-		return true
-	}
-
-	return false
+	return result * parsedValue
 }
