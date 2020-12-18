@@ -32,7 +32,7 @@ func getSumOfSolvedExpressions(inputs []string, solve solveFunction) int {
 	sum := 0
 
 	for _, input := range inputs {
-		sum += int(solveExpression(input, solve))
+		sum += solveExpression(input, solve)
 	}
 
 	return sum
