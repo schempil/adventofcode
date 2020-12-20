@@ -49,18 +49,19 @@ func (frgmnt fragment) findNeighbors(fragments []fragment) []fragment {
 	var neighbors []fragment
 
 	for _, otherFragment := range fragments {
+
 		if frgmnt.id == otherFragment.id {
 			continue
 		}
 
 		for _, border := range frgmnt.borders {
 			for _, otherBorder := range otherFragment.borders {
+
 				if border == otherBorder || border == reverseString(otherBorder) || otherBorder == reverseString(border) {
 					neighbors = append(neighbors, otherFragment)
 				}
 			}
 		}
-
 	}
 
 	return neighbors
@@ -72,10 +73,13 @@ type fragment struct {
 }
 
 func reverseString(s string) string {
+
 	runes := []rune(s)
+
 	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
 		runes[i], runes[j] = runes[j], runes[i]
 	}
+
 	return string(runes)
 }
 
