@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -15,19 +16,47 @@ func Solve() {
 	inputs := strings.Split(text, "\n")
 
 	fmt.Println("Solution Day 21 - Part 1:", getOccurrencesOfIngredientsWithoutAnyAllergens(inputs))
-	fmt.Println("Solution Day 21 - Part 2:")
+	fmt.Println("Solution Day 21 - Part 2:", getAlphabeticallySortedIngredientsList(inputs))
+}
+
+func getAlphabeticallySortedIngredientsList(inputs []string) string {
+
+	foods := parseFoods(inputs)
+	allergenIngredientMap := getAllergenIngredientsMap(inputs, foods)
+
+	var allergens []string
+
+	for allergen, _ := range allergenIngredientMap {
+		allergens = append(allergens, allergen)
+	}
+
+	sort.Strings(allergens
+
+	listOfIngredientsString := ""
+
+	for _, allergen := range allergens {
+		listOfIngredientsString = listOfIngredientsString + allergenIngredientMap[allergen][0] + ","
+	}
+
+	return listOfIngredientsString[0:len(listOfIngredientsString)-1]
 }
 
 func getOccurrencesOfIngredientsWithoutAnyAllergens(inputs []string) int {
 
 	foods := parseFoods(inputs)
+	allergenIngredientMap := getAllergenIngredientsMap(inputs, foods)
+
+	return countIngredientsWithNoAllergens(getListOfIngredientsWithAllergens(allergenIngredientMap), foods)
+}
+
+func getAllergenIngredientsMap(inputs []string, foods []food) map[string][]string {
 
 	allergenIngredientMap := make(map[string][]string)
 
 	initializeAllergenIngredientMap(allergenIngredientMap, foods)
 	fillAllergenIngredientMap(allergenIngredientMap, foods)
 
-	return countIngredientsWithNoAllergens(getListOfIngredientsWithAllergens(allergenIngredientMap), foods)
+	return allergenIngredientMap
 }
 
 type food struct {
