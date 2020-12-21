@@ -30,7 +30,7 @@ func getAlphabeticallySortedIngredientsList(inputs []string) string {
 		allergens = append(allergens, allergen)
 	}
 
-	sort.Strings(allergens
+	sort.Strings(allergens)
 
 	listOfIngredientsString := ""
 
@@ -38,7 +38,7 @@ func getAlphabeticallySortedIngredientsList(inputs []string) string {
 		listOfIngredientsString = listOfIngredientsString + allergenIngredientMap[allergen][0] + ","
 	}
 
-	return listOfIngredientsString[0:len(listOfIngredientsString)-1]
+	return listOfIngredientsString[0 : len(listOfIngredientsString)-1]
 }
 
 func getOccurrencesOfIngredientsWithoutAnyAllergens(inputs []string) int {
