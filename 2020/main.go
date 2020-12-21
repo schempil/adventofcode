@@ -1,11 +1,11 @@
 package main
 
 import (
-	"day20"
+	"day21"
 )
 
 func main() {
 
-	day20.Solve()
+	day21.Solve()
 
 }
