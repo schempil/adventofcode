@@ -19,10 +19,15 @@ func Solve() {
 	fmt.Println("Solution Day 21 - Part 2:", getAlphabeticallySortedIngredientsList(inputs))
 }
 
+type food struct {
+	ingredients []string
+	allergens   []string
+}
+
 func getAlphabeticallySortedIngredientsList(inputs []string) string {
 
 	foods := parseFoods(inputs)
-	allergenIngredientMap := getAllergenIngredientsMap(inputs, foods)
+	allergenIngredientMap := getAllergenIngredientsMap(foods)
 
 	var allergens []string
 
@@ -44,12 +49,12 @@ func getAlphabeticallySortedIngredientsList(inputs []string) string {
 func getOccurrencesOfIngredientsWithoutAnyAllergens(inputs []string) int {
 
 	foods := parseFoods(inputs)
-	allergenIngredientMap := getAllergenIngredientsMap(inputs, foods)
+	allergenIngredientMap := getAllergenIngredientsMap(foods)
 
 	return countIngredientsWithNoAllergens(getListOfIngredientsWithAllergens(allergenIngredientMap), foods)
 }
 
-func getAllergenIngredientsMap(inputs []string, foods []food) map[string][]string {
+func getAllergenIngredientsMap(foods []food) map[string][]string {
 
 	allergenIngredientMap := make(map[string][]string)
 
@@ -57,11 +62,6 @@ func getAllergenIngredientsMap(inputs []string, foods []food) map[string][]strin
 	fillAllergenIngredientMap(allergenIngredientMap, foods)
 
 	return allergenIngredientMap
-}
-
-type food struct {
-	ingredients []string
-	allergens   []string
 }
 
 func countIngredientsWithNoAllergens(listOfIngredientsWithAllergens []string, foods []food) int {
@@ -104,6 +104,7 @@ func getListOfIngredientsWithAllergens(allergenIngredientMap map[string][]string
 }
 
 func fillAllergenIngredientMap(allergenIngredientMap map[string][]string, foods []food) {
+
 	for allergen, _ := range allergenIngredientMap {
 
 		for _, food := range foods {
@@ -125,6 +126,7 @@ func fillAllergenIngredientMap(allergenIngredientMap map[string][]string, foods 
 }
 
 func isEverEntryInMapUnique(allergenIngredientMap map[string][]string) bool {
+
 	for allergen, _ := range allergenIngredientMap {
 		if len(allergenIngredientMap[allergen]) > 1 {
 			return false
@@ -145,6 +147,7 @@ func cleanUpAllergenIngredientMap(allergenIngredientMap map[string][]string) {
 }
 
 func removeIngredientFromMap(ingredient string, allergenIngredientMap map[string][]string) {
+
 	for allergen, _ := range allergenIngredientMap {
 		if len(allergenIngredientMap[allergen]) != 1 {
 			allergenIngredientMap[allergen] = removeStringFromArray(allergenIngredientMap[allergen], ingredient)
@@ -153,6 +156,7 @@ func removeIngredientFromMap(ingredient string, allergenIngredientMap map[string
 }
 
 func removeStringFromArray(s []string, r string) []string {
+
 	for i, v := range s {
 		if v == r {
 			return append(s[:i], s[i+1:]...)
@@ -180,10 +184,10 @@ func findSameIngredients(existingIngredients []string, newIngredients []string) 
 	}
 
 	return ingredients
-
 }
 
 func (food food) hasAllergen(allergen string) bool {
+
 	for _, foodAllergen := range food.allergens {
 		if foodAllergen == allergen {
 			return true
@@ -194,6 +198,7 @@ func (food food) hasAllergen(allergen string) bool {
 }
 
 func initializeAllergenIngredientMap(allergenIngredientMap map[string][]string, foods []food) {
+
 	for _, food := range foods {
 		for _, allergen := range food.allergens {
 			allergenIngredientMap[allergen] = []string{}
@@ -202,6 +207,7 @@ func initializeAllergenIngredientMap(allergenIngredientMap map[string][]string, 
 }
 
 func parseFoods(inputs []string) []food {
+
 	var foods []food
 
 	for _, input := range inputs {
