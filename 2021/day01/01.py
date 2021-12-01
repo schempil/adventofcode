@@ -1,52 +1,53 @@
 file1 = open('input.txt', 'r')
 lines = file1.readlines()
 
-def convertLinesToDepths(lines):
 
-    depths = []
+def convert_lines_to_depths(incoming_lines):
+    integers = []
 
-    for line in lines:
-        strippedLine = line.strip()
-        depths.append(int(strippedLine))
+    for line in incoming_lines:
+        stripped_line = line.strip()
+        integers.append(int(stripped_line))
 
-    return depths
+    return integers
 
-def countIncreasedDepths(depths):
 
-    countIncreased = 0
+def count_increased_depths(incoming_depths):
+    count = 0
 
     i = 0
-    while i < len(depths):
+    while i < len(incoming_depths):
 
         if i == 0:
             i += 1
             continue
 
-        if depths[i-1] < depths[i]:
-            countIncreased += 1
+        if incoming_depths[i - 1] < incoming_depths[i]:
+            count += 1
 
         i += 1
 
-    return countIncreased
+    return count
 
-def mapMeasurementsToThreeMeasuredSums(depths):
-    threeMeasureSums = []
+
+def map_measurements_to_three_measured_sums(incoming_depths):
+    sums = []
 
     i = 0
-    while i+2 < len(depths):
-
-        threeMeasureSums.append(depths[i] + depths[i+1] + depths[i+2])
+    while i + 2 < len(incoming_depths):
+        sums.append(incoming_depths[i] + incoming_depths[i + 1] + incoming_depths[i + 2])
 
         i += 1
 
-    return threeMeasureSums
+    return sums
 
-depths = convertLinesToDepths(lines)
-countIncreased = countIncreasedDepths(depths)
+
+depths = convert_lines_to_depths(lines)
+countIncreased = count_increased_depths(depths)
 
 print("Day01, Part1:", countIncreased)
 
-threeMeasureSums = mapMeasurementsToThreeMeasuredSums(depths)
-countIncreasedFromThreeMeasures = countIncreasedDepths(threeMeasureSums)
+threeMeasureSums = map_measurements_to_three_measured_sums(depths)
+countIncreasedFromThreeMeasures = count_increased_depths(threeMeasureSums)
 
 print("Day01, Part2:", countIncreasedFromThreeMeasures)
