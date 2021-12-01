@@ -29,7 +29,24 @@ def countIncreasedDepths(depths):
 
     return countIncreased
 
+def mapMeasurementsToThreeMeasuredSums(depths):
+    threeMeasureSums = []
+
+    i = 0
+    while i+2 < len(depths):
+
+        threeMeasureSums.append(depths[i] + depths[i+1] + depths[i+2])
+
+        i += 1
+
+    return threeMeasureSums
+
 depths = convertLinesToDepths(lines)
 countIncreased = countIncreasedDepths(depths)
 
-print(countIncreased)
+print("Day01, Part1:", countIncreased)
+
+threeMeasureSums = mapMeasurementsToThreeMeasuredSums(depths)
+countIncreasedFromThreeMeasures = countIncreasedDepths(threeMeasureSums)
+
+print("Day01, Part2:", countIncreasedFromThreeMeasures)
