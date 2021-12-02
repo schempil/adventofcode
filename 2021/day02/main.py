@@ -14,6 +14,13 @@ class SubmarinePosition:
         self.depth = depth
 
 
+class SubmarinePositionWithAim:
+    def __init__(self, x, depth, aim):
+        self.x = x
+        self.depth = depth
+        self.aim = aim
+
+
 def convert_lines_to_instructions(incoming_lines):
     instructions_from_lines = []
 
@@ -41,8 +48,28 @@ def determine_position_after_instructions(incoming_instructions):
     return submarine_position
 
 
+def determine_position_after_instructions_with_aim(incoming_instructions):
+
+    submarine_position_with_aim = SubmarinePositionWithAim(0, 0, 0)
+
+    for instruction in incoming_instructions:
+        if instruction.direction == 'forward':
+            submarine_position_with_aim.x += instruction.amount
+            submarine_position_with_aim.depth += submarine_position_with_aim.aim * instruction.amount
+
+        if instruction.direction == 'up':
+            submarine_position_with_aim.aim -= instruction.amount
+
+        if instruction.direction == 'down':
+            submarine_position_with_aim.aim += instruction.amount
+
+    return submarine_position_with_aim
+
+
 instructions = convert_lines_to_instructions(lines)
 
 final_submarine_position = determine_position_after_instructions(instructions)
-result_part_one = final_submarine_position.x * final_submarine_position.depth
-print(result_part_one)
+print(final_submarine_position.x * final_submarine_position.depth)
+
+final_submarine_position_with_aim = determine_position_after_instructions_with_aim(instructions)
+print(final_submarine_position_with_aim.x * final_submarine_position_with_aim.depth)
