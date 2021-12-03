@@ -35,7 +35,7 @@ def get_epsilon_rate_from_gamma_rate(incoming_gamma_rate):
     return calculated_epsilon_rate
 
 
-def determine_oxygen_generator_rating(incoming_diagnostic_report):
+def determine_rating(incoming_diagnostic_report, rating):
     updated_list = incoming_diagnostic_report
 
     for i in range(0, len(incoming_diagnostic_report[0])):
@@ -51,36 +51,18 @@ def determine_oxygen_generator_rating(incoming_diagnostic_report):
             if relevant_bit == '0':
                 count_zeros += 1
 
-        if count_ones >= count_zeros:
-            updated_list = list(filter(lambda diagnose_entry: diagnose_entry[i] == '1', updated_list))
+        if rating == 'oxygen':
+            if count_ones >= count_zeros:
+                updated_list = list(filter(lambda diagnose_entry: diagnose_entry[i] == '1', updated_list))
 
-        else:
-            updated_list = list(filter(lambda diagnose_entry: diagnose_entry[i] == '0', updated_list))
+            else:
+                updated_list = list(filter(lambda diagnose_entry: diagnose_entry[i] == '0', updated_list))
+        elif rating == 'co2':
+            if count_zeros > count_ones:
+                updated_list = list(filter(lambda diagnose_entry: diagnose_entry[i] == '1', updated_list))
 
-    return updated_list[0]
-
-
-def determine_co2_scrubber_rating(incoming_diagnostic_report):
-    updated_list = incoming_diagnostic_report
-
-    for i in range(0, len(incoming_diagnostic_report[0])):
-        count_zeros = 0
-        count_ones = 0
-
-        for diagnose in updated_list:
-            relevant_bit = diagnose[i]
-
-            if relevant_bit == '1':
-                count_ones += 1
-
-            if relevant_bit == '0':
-                count_zeros += 1
-
-        if count_zeros > count_ones:
-            updated_list = list(filter(lambda diagnose_entry: diagnose_entry[i] == '1', updated_list))
-
-        else:
-            updated_list = list(filter(lambda diagnose_entry: diagnose_entry[i] == '0', updated_list))
+            else:
+                updated_list = list(filter(lambda diagnose_entry: diagnose_entry[i] == '0', updated_list))
 
         if len(updated_list) == 1:
             return updated_list[0]
@@ -103,8 +85,8 @@ epsilon_rate = get_epsilon_rate_from_gamma_rate(gamma_rate)
 result_part_one = int(gamma_rate, 2) * int(epsilon_rate, 2)
 print("Day03 Part1", result_part_one)
 
-oxygen_generator_rating = determine_oxygen_generator_rating(diagnostic_report)
-co2_scrubber_rating = determine_co2_scrubber_rating(diagnostic_report)
+oxygen_generator_rating = determine_rating(diagnostic_report, 'oxygen')
+co2_scrubber_rating = determine_rating(diagnostic_report, 'co2')
 life_support_rating = int(oxygen_generator_rating, 2) * int(co2_scrubber_rating, 2)
 
 print("Day03 Part2", life_support_rating)
