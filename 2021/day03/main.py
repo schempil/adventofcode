@@ -2,14 +2,14 @@ file = open('input.txt', 'r')
 lines = file.readlines()
 
 
-def get_gamma_rate_from_diagnostic_report(diagnostic_report):
+def get_gamma_rate_from_diagnostic_report(incoming_diagnostic_report):
     calculated_gamma_rate = ""
 
-    for i in range(0, len(diagnostic_report[0])):
+    for i in range(0, len(incoming_diagnostic_report[0])):
         count_zeros = 0
         count_ones = 0
 
-        for diagnose in diagnostic_report:
+        for diagnose in incoming_diagnostic_report:
             relevant_bit = diagnose[i]
 
             if relevant_bit == '1':
@@ -35,11 +35,10 @@ def get_epsilon_rate_from_gamma_rate(incoming_gamma_rate):
     return calculated_epsilon_rate
 
 
-def determine_oxygen_generator_rating(diagnostic_report):
+def determine_oxygen_generator_rating(incoming_diagnostic_report):
+    updated_list = incoming_diagnostic_report
 
-    updated_list = diagnostic_report
-
-    for i in range(0, len(diagnostic_report[0])):
+    for i in range(0, len(incoming_diagnostic_report[0])):
         count_zeros = 0
         count_ones = 0
 
@@ -61,11 +60,10 @@ def determine_oxygen_generator_rating(diagnostic_report):
     return updated_list[0]
 
 
-def determine_co2_scrubber_rating(diagnostic_report):
+def determine_co2_scrubber_rating(incoming_diagnostic_report):
+    updated_list = incoming_diagnostic_report
 
-    updated_list = diagnostic_report
-
-    for i in range(0, len(diagnostic_report[0])):
+    for i in range(0, len(incoming_diagnostic_report[0])):
         count_zeros = 0
         count_ones = 0
 
@@ -88,13 +86,14 @@ def determine_co2_scrubber_rating(diagnostic_report):
             return updated_list[0]
 
 
-def parse_lines_to_diagnostic_report(lines):
-    diagnostic_report = []
+def parse_lines_to_diagnostic_report(incoming_lines):
+    parsed_diagnostic_report = []
 
-    for line in lines:
-        diagnostic_report.append(line.strip())
+    for line in incoming_lines:
+        parsed_diagnostic_report.append(line.strip())
 
-    return diagnostic_report
+    return parsed_diagnostic_report
+
 
 diagnostic_report = parse_lines_to_diagnostic_report(lines)
 
