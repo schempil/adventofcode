@@ -77,16 +77,17 @@ def parse_lines_to_diagnostic_report(incoming_lines):
     return parsed_diagnostic_report
 
 
-diagnostic_report = parse_lines_to_diagnostic_report(lines)
+if __name__ == "__main__":
+    diagnostic_report = parse_lines_to_diagnostic_report(lines)
 
-gamma_rate = get_gamma_rate_from_diagnostic_report(diagnostic_report)
-epsilon_rate = get_epsilon_rate_from_gamma_rate(gamma_rate)
+    gamma_rate = get_gamma_rate_from_diagnostic_report(diagnostic_report)
+    epsilon_rate = get_epsilon_rate_from_gamma_rate(gamma_rate)
 
-result_part_one = int(gamma_rate, 2) * int(epsilon_rate, 2)
-print("Day03 Part1", result_part_one)
+    result_part_one = int(gamma_rate, 2) * int(epsilon_rate, 2)
+    print("Day 03, Part 1:", result_part_one)
 
-oxygen_generator_rating = determine_rating(diagnostic_report, 'oxygen')
-co2_scrubber_rating = determine_rating(diagnostic_report, 'co2')
-life_support_rating = int(oxygen_generator_rating, 2) * int(co2_scrubber_rating, 2)
+    oxygen_generator_rating = determine_rating(diagnostic_report, 'oxygen')
+    co2_scrubber_rating = determine_rating(diagnostic_report, 'co2')
+    life_support_rating = int(oxygen_generator_rating, 2) * int(co2_scrubber_rating, 2)
 
-print("Day03 Part2", life_support_rating)
+    print("Day 03, Part 2:", life_support_rating)

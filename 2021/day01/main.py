@@ -42,12 +42,13 @@ def map_measurements_to_three_measured_sums(incoming_depths):
     return sums
 
 
-depths = convert_lines_to_depths(lines)
-countIncreased = count_increased_depths(depths)
+if __name__ == "__main__":
+    depths = convert_lines_to_depths(lines)
+    countIncreased = count_increased_depths(depths)
 
-print("Day01, Part1:", countIncreased)
+    print("Day 01, Part 1:", countIncreased)
 
-threeMeasureSums = map_measurements_to_three_measured_sums(depths)
-countIncreasedFromThreeMeasures = count_increased_depths(threeMeasureSums)
+    threeMeasureSums = map_measurements_to_three_measured_sums(depths)
+    countIncreasedFromThreeMeasures = count_increased_depths(threeMeasureSums)
 
-print("Day01, Part2:", countIncreasedFromThreeMeasures)
+    print("Day 01, Part 2:", countIncreasedFromThreeMeasures)

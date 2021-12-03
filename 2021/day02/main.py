@@ -66,10 +66,11 @@ def determine_position_after_instructions_with_aim(incoming_instructions):
     return submarine_position_with_aim
 
 
-instructions = convert_lines_to_instructions(lines)
+if __name__ == "__main__":
+    instructions = convert_lines_to_instructions(lines)
 
-final_submarine_position = determine_position_after_instructions(instructions)
-print(final_submarine_position.x * final_submarine_position.depth)
+    final_submarine_position = determine_position_after_instructions(instructions)
+    print("Day 02, Part 1:", final_submarine_position.x * final_submarine_position.depth)
 
-final_submarine_position_with_aim = determine_position_after_instructions_with_aim(instructions)
-print(final_submarine_position_with_aim.x * final_submarine_position_with_aim.depth)
+    final_submarine_position_with_aim = determine_position_after_instructions_with_aim(instructions)
+    print("Day 02, Part 2:", final_submarine_position_with_aim.x * final_submarine_position_with_aim.depth)
